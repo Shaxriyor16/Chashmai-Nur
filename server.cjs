@@ -30,28 +30,37 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
   .catch(err => console.error('❌ DB error:', err));
 
+// --- Simple session-like auth (for demo purposes) ---
+let loggedIn = false;
+
 // --- Routes ---
 
-// Asosiy sahifa
-app.get('/', async (req, res) => {
-  const foods = await Food.find({ deleted: false }).sort({ createdAt: -1 });
-  res.render('index', { foods });
+// Login page
+app.get('/login', (req, res) => {
+  res.render('login', { error: null });
 });
 
-// Foydalanuvchi menyu JSON
-app.get('/foods', async (req, res) => {
-  const foods = await Food.find({ deleted: false }).sort({ createdAt: -1 });
-  res.json(foods);
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  if (username === 'crazyshaxgamerpubg2009' && password === 'Sattarov2009') {
+    loggedIn = true;
+    res.redirect('/admin');
+  } else {
+    res.render('login', { error: 'Username yoki password xato' });
+  }
 });
 
 // Admin panel
 app.get('/admin', async (req, res) => {
+  if (!loggedIn) return res.redirect('/login');
   const foods = await Food.find().sort({ createdAt: -1 });
   res.render('admin', { foods });
 });
 
 // Ovqat qo‘shish
 app.post('/add-food', async (req, res) => {
+  if (!loggedIn) return res.redirect('/login');
+
   const { name, description, price, category } = req.body;
   const file = req.files?.image;
 
@@ -67,14 +76,17 @@ app.post('/add-food', async (req, res) => {
   res.redirect('/admin');
 });
 
-// Ovqatni soft delete qilish
+// Ovqatni soft delete
 app.post('/delete-food/:id', async (req, res) => {
+  if (!loggedIn) return res.redirect('/login');
   await Food.findByIdAndUpdate(req.params.id, { deleted: true });
   res.redirect('/admin');
 });
 
 // Ovqatni yangilash
 app.post('/update-food/:id', async (req, res) => {
+  if (!loggedIn) return res.redirect('/login');
+
   const { name, description, price, category } = req.body;
   const file = req.files?.image;
 
@@ -88,6 +100,12 @@ app.post('/update-food/:id', async (req, res) => {
 
   await Food.findByIdAndUpdate(req.params.id, updateData);
   res.redirect('/admin');
+});
+
+// Asosiy sahifa (foydalanuvchi)
+app.get('/', async (req, res) => {
+  const foods = await Food.find({ deleted: false }).sort({ createdAt: -1 });
+  res.render('index', { foods });
 });
 
 // --- Start server ---
