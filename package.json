@@ -1,7 +1,7 @@
 {
   "name": "restaurant-menu",
   "version": "1.0.0",
-  "description": "Online restaurant menu app",
+  "description": "Menu management app",
   "main": "server.cjs",
   "type": "commonjs",
   "scripts": {
@@ -10,22 +10,12 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
-    "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",
-    "mongoose": "^7.3.1"
+    "mongoose": "^7.6.1",
+    "ejs": "^3.1.9"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
-  "engines": {
-    "node": ">=22.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Shaxriyor16/Chashmai-Nur"
-  },
-  "keywords": ["restaurant", "menu", "node", "express", "mongodb"],
-  "author": "Shaxriyor",
-  "license": "MIT"
+    "nodemon": "^3.0.3"
+  }
 }
