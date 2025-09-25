@@ -7,7 +7,7 @@ const fs = require('fs');
 const Food = require('./models/Food');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 // --- Papkalarni yaratish ---
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -32,7 +32,13 @@ mongoose.connect(process.env.MONGO_URI)
 
 // --- Routes ---
 
-// Foydalanuvchi menyu
+// Asosiy sahifa
+app.get('/', async (req, res) => {
+  const foods = await Food.find({ deleted: false }).sort({ createdAt: -1 });
+  res.render('index', { foods });
+});
+
+// Foydalanuvchi menyu JSON
 app.get('/foods', async (req, res) => {
   const foods = await Food.find({ deleted: false }).sort({ createdAt: -1 });
   res.json(foods);
